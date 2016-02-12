@@ -1,0 +1,123 @@
+//
+// Container
+// ==============================
+
+
+
+
+// Fill Container
+//
+// ------------------------------
+
+/**
+ * Fill Container
+ * 1. on its own - fill available vertical space
+ * 2. as a child - flex to fill vertical space
+ */
+
+.Container--fill {
+  height: 100%; // 1
+
+  > .Container--fill {
+      #flex .flex(1,1,0);
+      position: relative;
+  }
+}
+
+/**
+ * Container Layout
+ * 1. create a flexible layout, either `column` or `row`
+ * 2. flex-column elements collapse horizontally, so we stretch them out again
+ */
+
+.Container--direction-column,
+.Container--direction-row {
+  #flex .display-flex(); // 1
+  max-height: 100%;
+  width: 100%; // 2
+
+  > .ViewManager,
+  > .Container--fill {
+    #flex .flex(1,1,0);
+    position: relative;
+  }
+
+}
+
+.Container--direction-column {
+  #flex .flex-direction(column); // 1
+}
+
+.Container--direction-row {
+  #flex .flex-direction(row); // 1
+
+  > .Container--fill {
+    height: auto;
+    width: auto;
+  }
+}
+
+
+// Handle alignment of containers' children
+
+.Container--align-end {
+  #flex .align-items(flex-end);
+}
+.Container--align-center {
+  #flex .align-items(center);
+
+  // center children as users may expect
+  .Container--direction-column > & {
+    text-align: center;
+  }
+}
+.Container--align-start {
+  #flex .align-items(flex-start);
+}
+
+
+// Handle justification of containers' children
+
+.Container--justified {
+  #flex .justify-content(space-around);
+}
+.Container--justify-end {
+  #flex .justify-content(flex-end);
+}
+.Container--justify-center {
+  #flex .justify-content(center);
+}
+.Container--justify-start {
+  #flex .justify-content(flex-start);
+}
+
+
+// Scrollable containers
+
+.Container--scrollable {
+  max-height: 100%;
+  overflow: scroll;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+
+  // introduce iOS style springy scrolling
+  &:before,
+  &:after {
+    content: "";
+    height: 1px;
+    position: absolute;
+    width: 1px;
+  }
+
+  &:before {
+    bottom: -1px;
+  }
+  &:after {
+    top: -1px;
+  }
+}
+
+
+
+// Mixins
+// ------------------------------
