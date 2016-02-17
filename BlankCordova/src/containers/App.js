@@ -1,58 +1,41 @@
 import React, { Component, PropTypes } from 'react';
-import ReactCSSTransitionGroup  from 'react-addons-css-transition-group'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { History,Link } from 'react-router'
 import { IndexLink } from 'react-router';
-import DocumentMeta from 'react-document-meta';
-import MobileApp from '../mixins/MobileApp';
-import { Container, NavigationBar } from '../components/mobile';
+import SQ from 'sq-components';
 import configs from '../configs';
 import * as authActions from '../actions/auth'
 
 var App = React.createClass({
 
-    mixins: [History,MobileApp],
+    mixins: [History],
 
-    componentWillReceiveProps(nextProps) {
-        if (!this.props.auth.token && nextProps.auth.token) {
-            // login
-            this.history.pushState(null, '/list');
-        } else if (this.props.auth.token && !nextProps.auth.token) {
-            // logout
-            this.history.pushState(null, '/login');
+    componentDidMount () {
+        // Hide the splash screen when the app is mounted
+        if (navigator.splashscreen) {
+            navigator.splashscreen.hide();
         }
     },
 
-    handleLogout(){
-        this.props.actions.logout();
-    },
-
     render() {
-        const {auth:{token}} = this.props;
-
-        const child = React.cloneElement(this.props.children, {key: new Date().getTime()});
-
-        const animate = child.type.animate;
-
-        const disabledAnimate = !this.prevAnimate || animate == this.prevAnimate;
-
-        this.prevAnimate = animate;
-
-        var transitionName = 'view-transition-instant';
-
+        const {auth:{token},query,children} = this.props;
+        let viewKey = children.type.getViewKey(this.props);
+        let transition = (query && query.transition) ? query.transition : null;
+        let enableTransition = this.__viewKey != null && viewKey != this.__viewKey;
+        this.__viewKey = viewKey;
+        var transitionName = transition || 'fade-contract';
         return (
-            <Container id="app" direction='column' fill>
-                <DocumentMeta {...configs.app}/>
-                <NavigationBar name='main'/>
-                <ReactCSSTransitionGroup transitionName={transitionName}
-                                         transitionEnterTimeout={500}
-                                         transitionLeaveTimeout={500}
-                                         className={className}
-                                         component="div">
-                    {child}
-                </ReactCSSTransitionGroup>
-            </Container>
+            <SQ.Box id="app" direction='column' fill>
+                <SQ.Transition
+                    transitionEnterEnabled={enableTransition}
+                    transitionLeaveEnabled={enableTransition}
+                    transitionName={transitionName}
+                    viewKey={viewKey}
+                    >
+                    {children}
+                </SQ.Transition>
+            </SQ.Box>
         );
     }
 });

@@ -1,7 +1,8 @@
 import superagent from 'superagent';
 import configs from '../configs';
-import sessionStorage from './sessionStorage';
+import { createStorage } from './storage';
 
+const storage = createStorage();
 const methods = ['get', 'post', 'put', 'patch', 'del'];
 
 function formatUrl(path) {
@@ -19,7 +20,7 @@ class _ApiClient {
                     request.set('Content-Type', 'application/x-www-form-urlencoded');
                 }
                 if (token) {
-                    let bearerToken = sessionStorage.get(configs.authToken).access_token;
+                    let bearerToken = storage.get(configs.authToken).access_token;
                     request.set('Authorization', 'Bearer ' + bearerToken)
                 }
                 if (params) {

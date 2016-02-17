@@ -17,37 +17,40 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
 
-  		clean: ['./dist','./lib'],
+        copy: {
+            images: {
+                expand: true,
+                cwd: 'src/',
+                src: '[src/assets/images/**]',
+                dest: 'www/'
+            }
+        },
 
   		less: {
             dev: {
                 files: {
-                    "./dist/sq-box.css": "./assets/sq-box.less"
-                }
-            },
-            example: {
-                files: {
-                    "./example/example.css": "./example/example.less"
+                    "./www/css/index.css": "./src/assets/css/main.less"
                 }
             },
             prod: {
                 files: {
-                    "./dist/sq-box.min.css": "./assets/sq-box.less"
+                    "./www/css/index.css": "./src/assets/css/main.less"
                 },
                 options: {
                     compress: true
                 }
             }
         },
+
         webpack: {
         	dev: {
    				resolve: {
                     extensions: ['', '.js', '.jsx']
                 },
-                entry: './src/sq-box.js',
+                entry: './src/app.js',
                 output: {
-                    path: './dist',
-                    filename: 'sq-box.js'
+                    path: './www/scripts',
+                    filename: 'app.js'
                 },
                 module:{
                 	 loaders: [{
@@ -55,58 +58,20 @@ module.exports = function (grunt) {
                             exclude: /node_modules/,
                             loaders: ['babel?' + JSON.stringify(babelLoaderQuery)]
                      }]
-                }
-        	},
-            example: {
-                resolve: {
-                    extensions: ['', '.js', '.jsx']
                 },
-                entry: './example/example.js',
-                output: {
-                    path: './example',
-                    filename: 'example.bundle.js'
-                },
-                module:{
-                    loaders: [{
-                        test: /\.jsx?$/,
-                        exclude: /node_modules/,
-                        loaders: ['babel?' + JSON.stringify(babelLoaderQuery)]
-                        }
-                    ]
-                }
-            },
-        	lib: {
-   				resolve: {
-                    extensions: ['', '.js', '.jsx']
-                },
-                entry: './src/sq-box.js',
-                output: {
-                    path: './lib',
-                    filename: 'sq-box.js'
-                },
-                module:{
-                	 loaders: [{
-                            test: /\.jsx?$/,
-                            exclude: /node_modules/,
-                            loaders: ['babel?' + JSON.stringify(babelLoaderQuery)]
-                        }
-                    ]
-                },
-                externals: {
-                    react: 'React',
-                    'react-dom': 'ReactDOM',
-                    'classnames': 'classnames',
-                    blacklist: 'blacklist'
-                }
+                plugins: [
+                    new webpack.optimize.OccurenceOrderPlugin()
+                ],
+                devtool: "source-map"
         	},
         	prod: {
 				resolve: {
                     extensions: ['', '.js', '.jsx']
                 },
-                entry: './src/sq-box.js',
+                entry: './src/app.js',
                 output: {
-                    path: './dist',
-                    filename: 'sq-box.min.js'
+                    path: './www/scripts',
+                    filename: 'app.min.js'
                 },
                 module:{
                 	 loaders: [{
@@ -130,5 +95,6 @@ module.exports = function (grunt) {
         	}
         }
     });
-	grunt.registerTask('default', ['clean', 'less:dev','less:example','less:prod','webpack:lib','webpack:dev','webpack:example','webpack:prod']);
-}
+	grunt.registerTask('default', ['copy:images', 'less:dev','webpack:dev']);
+    grunt.registerTask('prod', ['copy:images', 'less:prod','webpack:prod']);
+};

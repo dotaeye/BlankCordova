@@ -6,6 +6,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ReferenceCachePath>C:\Users\Administrator\AppData\Local\Temp\BlankCordova_refcache</ReferenceCachePath>
+    <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|iOS'">
     <DebuggerFlavor>iOSEmulatoriPhone6</DebuggerFlavor>

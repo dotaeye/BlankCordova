@@ -4,6 +4,7 @@
         "add-module-exports",
         "transform-export-extensions",
         "transform-async-to-generator",
-        "transform-class-properties"
+        "transform-class-properties",
+        "transform-object-rest-spread"
     ]
 }
